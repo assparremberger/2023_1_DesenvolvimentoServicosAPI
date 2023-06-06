@@ -1,6 +1,12 @@
 const restify = require("restify");
 const errors = require("restify-errors");
 
+const corsMiddleware = require("restify-cors-middleware2");
+
+const cors = corsMiddleware({
+    origins: ['*']
+});
+
 const servidor = restify.createServer({
     name : 'Lojinha' ,
     version : '1.0.0'
@@ -9,6 +15,10 @@ const servidor = restify.createServer({
 servidor.use( restify.plugins.acceptParser(servidor.acceptable) );
 servidor.use( restify.plugins.queryParser() );
 servidor.use( restify.plugins.bodyParser() );
+
+servidor.pre( cors.preflight );
+servidor.use( cors.actual );
+
 
 servidor.listen(8001, function(){
     console.log("%s executando em %s", servidor.name, servidor.url);
